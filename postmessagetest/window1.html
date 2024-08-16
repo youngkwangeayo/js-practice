@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Page</title>
+</head>
+<body>
+    <h1>Parent Page</h1>
+  
+   <span>같은페이지 포스트메세지보내기</span>
+   <input type="text" id="req-message">
+    <button onclick="sendMessageToChild()">Send Message to Child</button>
+
+  <script>
+
+    function sendMessageToChild() {
+        let inputMessage = document.getElementById("req-message").value;
+        let message = "";
+        if(inputMessage == ""){
+            alert("메세지 입력해줘")
+        }else{
+            message = inputMessage;
+            window.postMessage(message,"*");
+            document.getElementById("req-message").value = '';
+        }
+        
+    }
+
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.source === 'react-devtools-content-script')return;
+        alert(`message : ${event.data}`);
+        console.log('message :', event.data);
+        
+    });
+
+
+    // test홤수
+    function testddd(){
+        return new Promise((resolve,reject)=>{
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.source === 'react-devtools-content-script')return;
+                
+                console.log('message :', event.data);
+                resolve(event.data);
+            });
+
+        })
+    }
+
+  </script>
+</body>
+</html>

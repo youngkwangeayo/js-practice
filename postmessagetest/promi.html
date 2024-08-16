@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Page</title>
+</head>
+<body>
+    <h1>Parent Page</h1>
+  
+    <span>네이티브 js 통신</span>
+    <input type="text" id="req-message">
+    <button onclick="somneThingTodo()">네이티브로 보내기</button>
+
+  <script>
+
+/**
+ *         
+ *          ===============================  protocol  ==========================================
+ *         { 
+ *              formType : "order"   //타입으로 한개로 묶기
+ *                data : {id : 123, name : "test"}  //  js에서는 요청 데이타, 네이티브에서는 응답데이타
+ *          }
+ *
+ *           js 에서 네이티브로 보낼때 formType 을 넣어서보냄 예로 order
+ *           그러면 네이티브에서 응답을 보낼때 요청받은 formType 그대로 넣어서 응답 해줌.
+ *          
+ * 
+ * 
+ *        ===============================  순서  ==========================================
+ *          
+ *          1. js 에서 sendOS  호출  sendOS는 js postMessge리슨중..
+ *      
+ *          2.  네이티브에서 receiverOS 함수 호출 receiverOS는 postMessge 를 보냄.
+ * 
+ *          3.  같은 타입의 조건일때만 해당 sendOS 응답을 받아서 동기처리
+ *         
+ * 
+ * **/
+
+
+    //일반버튼클릭 함수
+    async function somneThingTodo() {
+
+        let protocol = {
+                formType : "order",
+                data : { id : 1, name : "test"}
+            };
+
+
+        try {
+            let res = await sendOS(protocol);
+            alert(res);
+        } catch (error) {
+            console.log(error.message, "네이티브에서 응답 없음");
+        }
+        
+    }
+
+
+
+
+
+
+//  /*  =============== 네이티브 <-> JS 통신 =================
+
+
+
+/* //네이티브의 함수호출 버전
+function receiverOS(data){
+    // if (!data.formType) throw new Error("요청을받았지만 올곳은 프로토콜이아닙니다.");
+    if (!data.formType) console.log("요청을받았지만 올곳은 프로토콜이아닙니다.");
+
+    window.postMessage(data.data,"*");
+};
+
+
+//네이비트의 리스너 버전
+window.chrome.webview.addEventListener('message', function (event) {
+        // if (!data.formType) throw new Error("요청을받았지만 올곳은 프로토콜이아닙니다.");
+        if (!data.formType) console.log("요청을받았지만 올곳은 프로토콜이아닙니다.");
+
+        window.postMessage(data.data,"*");
+});
+
+
+//네이티브의 함수호출 버전 END */
+
+
+// js 에서 네이트브에 요청과 응답 동기처리 함수
+async function sendOS(reqData) {
+        // =====예외처리=====
+        if (!reqData.formType) throw new Error("Not Null form");
+        if ( typeof reqData.formType != "string") throw new Error("form 은 스트링");
+        // =====예외처리 END =====
+
+        
+        try { //웹뷰 호출
+            window.chrome.webview.postMessage(reqData); 
+        } catch (error) {
+            console.log("no WebView");
+        };
+
+
+        let answer = false; // 웹뷰의 응답
+        let responseTimeOut = 5000; //웹뷰의 응답 요청 대기 시간
+
+        return new Promise(function(resolve,reject){
+            window.removeEventListener("message");
+            
+            window.addEventListener('message', (event) => {
+                if ( event.data && event.data.source === 'react-devtools-content-script' ) return;
+                    
+                if ( event.data.type == form ) { 
+                    answer = true;
+                    resolve(event.data.data);
+                };
+            });
+
+            setTimeout(()=>{
+                if (!answer) reject(new Error("responseTimeOut"));
+            },responseTimeOut);
+
+
+
+        });
+};
+
+
+
+//  =============== 네이티브 <-> JS 통신  AND =================   */ 
+
+
+
+
+
+  </script>
+</body>
+</html>

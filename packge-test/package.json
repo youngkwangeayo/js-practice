@@ -1,0 +1,10 @@
+{
+    "name": "@internal/hugo",
+    "description": "휴고 패키치 테스트",
+    "authors": "hugo.nextpay@gmail.com",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+       
+    }
+}

@@ -1,0 +1,1 @@
+//node index.js 실행 시키던가

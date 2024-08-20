@@ -16,7 +16,7 @@ class NoticeCQE {
         
         this.targetNoticeId = targetNoticeId; //   id = order. order에 대한 노티만 받겠다라는 타겟노티아이디
 
-        if (Notice.#listener == false) { //1번만 리스너 등록
+        if (NoticeCQE.#listener == false) { //1번만 리스너 등록
             this.#registerNotice(); 
         }
 
